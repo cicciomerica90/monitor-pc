@@ -1,94 +1,96 @@
 # Monitor PC
 
-Temperature, frequenze e carico di CPU e GPU in tempo reale, pensato per restare aperto su un monitor piccolo accanto a quello principale. Per Windows 10 e 11.
+**English** | [Italiano](README.it.md)
 
-![Il monitor in condizioni normali](schermate/normale.png)
+Real-time CPU and GPU temperature, clock and load, made to stay open on a small secondary monitor. Free, for Windows 10 and 11.
 
-*English: a small always-on hardware dashboard for Windows (CPU/GPU temperature, clock, load, power, fan, VRAM, RAM) that changes colour when things get hot or hit full load. It reads its data from LibreHardwareMonitor. The interface is in Italian.*
+![The monitor in normal conditions](screenshots/normal.png)
 
-## Cosa mostra
+## What it shows
 
-- **CPU**: temperatura, carico totale, carico di ogni thread, frequenza più alta e media dei core, consumo.
-- **GPU**: temperatura, carico, frequenza, consumo, ventola, memoria video.
-- **RAM** usata e ora, nella striscia in basso.
+- **CPU**: temperature, total load, load of each thread, highest clock and core average, power draw.
+- **GPU**: temperature, load, clock, power draw, fan, video memory.
+- **RAM** in use and the time, in the bottom strip.
 
-Lo sfondo di ogni pannello è il grafico della temperatura degli ultimi due minuti, con le tacche delle soglie sul bordo destro.
+The background of each panel is the temperature graph of the last two minutes, with the threshold marks on the right edge.
 
-## Come avvisa
+## How it warns you
 
-| Stato | Cosa succede | Soglia iniziale |
+| State | What happens | Default threshold |
 |---|---|---|
-| Sta scaldando | i numeri diventano ambra | CPU 80 °C, GPU 75 °C |
-| Temperatura alta | il pannello diventa rosso e pulsa; avviso sonoro facoltativo | CPU 90 °C, GPU 85 °C |
-| Pieno carico | barra viola a strisce con l'etichetta "Pieno carico" | carico sopra il 95% per qualche secondo |
+| Heating up | the numbers turn amber | CPU 80 °C, GPU 75 °C |
+| High temperature | the whole panel turns red and pulses; optional beep | CPU 90 °C, GPU 85 °C |
+| Full load | purple striped bar with a "Full load" label | load above 95% for a few seconds |
 
-Le soglie si cambiano dalle impostazioni (tasto `S`).
+Thresholds can be changed in the settings (`S` key).
 
-![GPU a pieno carico che scalda](schermate/pieno-carico.png)
-![Allarme temperatura sulla CPU](schermate/allarme.png)
+![GPU at full load and heating up](screenshots/full-load.png)
+![Temperature alarm on the CPU](screenshots/alarm.png)
 
-Si adatta a schermi orizzontali, verticali e a barra:
+It adapts to landscape, portrait and bar-shaped screens:
 
-![Su un monitor a barra 1920×480](schermate/monitor-a-barra.png)
+![On a 1920×480 bar monitor](screenshots/bar-monitor.png)
 
-Le schermate usano dati dimostrativi.
+The screenshots use demo data.
 
-## Installazione
+## Install
 
-1. Scarica il progetto: pulsante verde **Code** → **Download ZIP**, poi estrai la cartella.
-2. Doppio clic su `Installa.bat`.
-3. Conferma la richiesta di amministratore di Windows.
-4. Se compare la finestra "PawnIO is not installed", premi OK: è il driver che legge la temperatura della CPU.
+1. Download the project: green **Code** button → **Download ZIP**, then extract the folder.
+2. Double-click `Install.bat`.
+3. Confirm the Windows administrator prompt.
+4. If a window says "PawnIO is not installed", press OK: it is the driver that reads the CPU temperature.
 
-Alla fine il monitor si apre da solo e sul desktop compare il collegamento **Monitor PC**. Trascina la finestra sul monitor piccolo e premi `F` per lo schermo intero.
+When it finishes, the monitor opens by itself and a **Monitor PC** shortcut appears on the desktop. Drag the window to the small monitor and press `F` for full screen.
 
-### Cosa fa l'installatore
+The installer and the monitor speak Italian on an Italian Windows and English everywhere else. You can switch language in the settings.
 
-- Copia il programma in `C:\Program Files\Monitor PC`.
-- Scarica l'ultima versione di [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor) da GitHub, gli attiva il server web locale (porta 8085) e lo imposta per partire ridotto a icona. Se sul PC ce n'è già uno in funzione, usa quello.
-- Crea un'attività pianificata che avvia LibreHardwareMonitor a ogni accesso, senza richiesta di conferma.
-- Crea il collegamento sul desktop e, se lo chiedi, quello per aprire il monitor a ogni accensione.
-- Registra il programma tra le app installate, così si toglie da Impostazioni → App.
+### What the installer does
 
-Per installare senza rete, metti `LibreHardwareMonitor.zip` (dalla pagina delle release di LibreHardwareMonitor) nella stessa cartella di `Installa.bat`.
+- Copies the program to `C:\Program Files\Monitor PC`.
+- Downloads the latest [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor) from GitHub, turns on its local web server (port 8085) and sets it to start minimized to the tray. If one is already running on the PC, it uses that one.
+- Creates a scheduled task that starts LibreHardwareMonitor at every logon, without a confirmation prompt.
+- Creates the desktop shortcut and, if you ask for it, one that opens the monitor at every logon.
+- Registers the program in the installed apps list, so it can be removed from Settings → Apps.
 
-### Senza installatore
+To install offline, put `LibreHardwareMonitor.zip` (from the LibreHardwareMonitor releases page) in the same folder as `Install.bat`.
 
-`Monitor PC.html` funziona anche da solo: avvia LibreHardwareMonitor, attiva **Options → Remote Web Server → Run** e apri il file in Edge o Chrome.
+### Without the installer
 
-## Tasti
+`Monitor PC.html` also works on its own: run LibreHardwareMonitor, turn on **Options → Remote Web Server → Run** and open the file in Edge or Chrome.
 
-| Tasto | Azione |
+## Keys
+
+| Key | Action |
 |---|---|
-| `F` | schermo intero |
-| `S` | impostazioni: soglie, avviso sonoro, indirizzo di LibreHardwareMonitor |
-| `D` | demo con dati finti |
+| `F` | full screen |
+| `S` | settings: thresholds, beep, language, LibreHardwareMonitor address |
+| `D` | demo with fake data |
 
-## Disinstallazione
+## Uninstall
 
-Impostazioni → App → App installate → Monitor PC, oppure doppio clic su `Disinstalla.bat`. Il driver PawnIO resta installato e si toglie dallo stesso elenco.
+Settings → Apps → Installed apps → Monitor PC, or double-click `Uninstall.bat`. The PawnIO driver stays installed and can be removed from the same list.
 
-## Come funziona
+## How it works
 
-Windows non permette a una pagina web di leggere i sensori. Li legge LibreHardwareMonitor, che li pubblica su `http://localhost:8085/data.json`; `Monitor PC.html` li rilegge ogni secondo e li disegna. Tutto resta sul PC: la pagina non contatta nessun altro indirizzo.
+Windows does not let a web page read hardware sensors. LibreHardwareMonitor reads them and publishes them at `http://localhost:8085/data.json`; `Monitor PC.html` reads that every second and draws it. Everything stays on the PC: the page contacts no other address.
 
-Il programma è un unico file HTML, senza dipendenze. L'installatore è in PowerShell (`installa.ps1`, `disinstalla.ps1`) e si può leggere prima di eseguirlo.
+The program is a single HTML file with no dependencies. The installer is plain PowerShell (`install.ps1`, `uninstall.ps1`), so you can read it before running it.
 
-## Limiti noti
+## Known limits
 
-- Lo schermo intero va rimesso con `F` a ogni avvio; la posizione della finestra invece viene ricordata.
-- I nomi dei sensori cambiano da un hardware all'altro: se un valore resta "–", apri una segnalazione indicando CPU, GPU e versione di LibreHardwareMonitor.
-- Interfaccia solo in italiano.
+- This is an early version, tried on few machines so far. Sensor names change from one hardware to another: if a value stays "–", please open an issue with your CPU, GPU and LibreHardwareMonitor version.
+- Full screen has to be turned on again with `F` at every start; the window position is remembered.
+- Interface in English and Italian only.
 
-## Licenze
+## Credits
 
-Il codice di Monitor PC è distribuito con licenza MIT (vedi `LICENSE`).
+Designed and written by cicciomerica90 together with Claude, Anthropic's AI assistant.
 
-Componenti di terze parti, dettagli in `LICENZE-TERZE-PARTI.txt`:
+## Licenses
 
-- [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), licenza MPL 2.0. Non è incluso: lo scarica l'installatore.
-- Caratteri Big Shoulders e Atkinson Hyperlegible Next, licenza SIL OFL 1.1, incorporati in `Monitor PC.html`.
+Monitor PC's code is released under the MIT license (see `LICENSE`).
 
-## Crediti
+Third-party components, details in `THIRD-PARTY-NOTICES.txt`:
 
-Progettato e scritto da cicciomerica90 insieme a Claude, l'assistente di Anthropic.
+- [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), MPL 2.0 license. Not included: the installer downloads it.
+- Big Shoulders and Atkinson Hyperlegible Next typefaces, SIL OFL 1.1 license, embedded in `Monitor PC.html`.

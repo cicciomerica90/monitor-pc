@@ -229,7 +229,7 @@ dialog fieldset{border:0;margin-bottom:1em}
 dialog legend{font-weight:700;margin-bottom:.4em}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:.6em}
 dialog label{display:grid;gap:.25em;color:var(--muted);font-size:.92em}
-dialog input[type=number],dialog input[type=text]{
+dialog input[type=number],dialog input[type=text],dialog select{
   font:inherit;color:var(--text);background:var(--ink);border:1px solid #2b3a55;border-radius:.4em;padding:.4em .55em;width:100%;
 }
 dialog .check{display:flex;align-items:center;gap:.55em;color:var(--text)}
@@ -249,7 +249,7 @@ dialog .spacer{flex:1}
 
 <main class="deck">
 
-  <section class="panel" id="cpu" data-state="unknown" data-load="normal" aria-label="Processore">
+  <section class="panel" id="cpu" data-state="unknown" data-load="normal" data-t-aria="cpuAria" aria-label="Processore">
     <svg class="thermo" viewBox="0 0 120 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="fade-cpu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".36"/><stop offset="1" stop-color="currentColor" stop-opacity=".04"/></linearGradient></defs><path class="area" fill="url(#fade-cpu)"/><path class="edge"/></svg>
     <div class="marks" aria-hidden="true"><span class="mark warn"></span><span class="mark crit"></span></div>
     <div class="content">
@@ -264,20 +264,20 @@ dialog .spacer{flex:1}
       </div>
       <div class="meters">
         <div>
-          <div class="row"><span class="label">Carico</span><span class="chip">Pieno carico</span><span class="val load"><span data-f="load">–</span><small>%</small></span></div>
+          <div class="row"><span class="label" data-t="load">Carico</span><span class="chip" data-t="fullLoad">Pieno carico</span><span class="val load"><span data-f="load">–</span><small>%</small></span></div>
           <div class="bar"><i></i></div>
         </div>
-        <div class="row"><span class="label">Frequenza</span><span class="val"><span data-f="freq">–</span><small data-f="frequ">GHz</small></span></div>
+        <div class="row"><span class="label" data-t="freq">Frequenza</span><span class="val"><span data-f="freq">–</span><small data-f="frequ">GHz</small></span></div>
         <div class="extras">
-          <span data-x="power">Consumo<b>–</b></span>
-          <span data-x="avg">Media dei core<b>–</b></span>
+          <span data-x="power"><span data-t="power">Consumo</span><b>–</b></span>
+          <span data-x="avg"><span data-t="coreAvg">Media dei core</span><b>–</b></span>
         </div>
-        <div class="under"><span class="label" data-f="tlabel">Thread</span><div class="threads" role="img" aria-label="Carico di ogni thread"></div></div>
+        <div class="under"><span class="label" data-f="tlabel">Thread</span><div class="threads" role="img" data-t-aria="threadsAria" aria-label="Carico di ogni thread"></div></div>
       </div>
     </div>
   </section>
 
-  <section class="panel" id="gpu" data-state="unknown" data-load="normal" aria-label="Scheda video">
+  <section class="panel" id="gpu" data-state="unknown" data-load="normal" data-t-aria="gpuAria" aria-label="Scheda video">
     <svg class="thermo" viewBox="0 0 120 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="fade-gpu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".36"/><stop offset="1" stop-color="currentColor" stop-opacity=".04"/></linearGradient></defs><path class="area" fill="url(#fade-gpu)"/><path class="edge"/></svg>
     <div class="marks" aria-hidden="true"><span class="mark warn"></span><span class="mark crit"></span></div>
     <div class="content">
@@ -292,80 +292,83 @@ dialog .spacer{flex:1}
       </div>
       <div class="meters">
         <div>
-          <div class="row"><span class="label">Carico</span><span class="chip">Pieno carico</span><span class="val load"><span data-f="load">–</span><small>%</small></span></div>
+          <div class="row"><span class="label" data-t="load">Carico</span><span class="chip" data-t="fullLoad">Pieno carico</span><span class="val load"><span data-f="load">–</span><small>%</small></span></div>
           <div class="bar"><i></i></div>
         </div>
-        <div class="row"><span class="label">Frequenza</span><span class="val"><span data-f="freq">–</span><small data-f="frequ">MHz</small></span></div>
+        <div class="row"><span class="label" data-t="freq">Frequenza</span><span class="val"><span data-f="freq">–</span><small data-f="frequ">MHz</small></span></div>
         <div class="extras">
-          <span data-x="power">Consumo<b>–</b></span>
-          <span data-x="fan">Ventola<b>–</b></span>
-          <span data-x="memclk">Freq. memoria<b>–</b></span>
+          <span data-x="power"><span data-t="power">Consumo</span><b>–</b></span>
+          <span data-x="fan"><span data-t="fan">Ventola</span><b>–</b></span>
+          <span data-x="memclk"><span data-t="memClock">Freq. memoria</span><b>–</b></span>
         </div>
-        <div class="under"><span class="label">Memoria video</span><div class="vram"><i></i></div><output data-f="vram">–</output></div>
+        <div class="under"><span class="label" data-t="vram">Memoria video</span><div class="vram"><i></i></div><output data-f="vram">–</output></div>
       </div>
     </div>
   </section>
 
   <footer class="strip">
     <div class="ram"><span>RAM</span><div class="vram"><i id="ram-bar"></i></div><b id="ram-used">–</b><span class="ram-of" id="ram-of"></span></div>
-    <button class="demo-tag" id="demo-tag" hidden title="Clic per uscire dalla demo">Demo, dati finti</button>
-    <div class="status" id="status" data-kind="off" role="status"><i class="dot"></i><span>In attesa dei dati</span></div>
+    <button class="demo-tag" id="demo-tag" hidden data-t="demoTag" data-t-title="demoTitle" title="Clic per uscire dalla demo">Demo, dati finti</button>
+    <div class="status" id="status" data-kind="off" role="status"><i class="dot"></i><span data-t="waiting">In attesa dei dati</span></div>
     <time class="clock" id="clock"></time>
     <div class="tools">
-      <button id="btn-settings" title="Impostazioni (S)" aria-label="Impostazioni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
-      <button id="btn-full" title="Schermo intero (F)" aria-label="Schermo intero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      <button id="btn-settings" data-t-title="settingsTitle" data-t-aria="settings" title="Impostazioni (S)" aria-label="Impostazioni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></button>
+      <button id="btn-full" data-t-title="fullTitle" data-t-aria="fullscreen" title="Schermo intero (F)" aria-label="Schermo intero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
     </div>
   </footer>
 </main>
 
 <div class="setup" id="setup" hidden>
   <div class="setup-card">
-    <h1>Manca solo il lettore dei sensori</h1>
+    <h1 data-t="setupTitle">Manca solo il lettore dei sensori</h1>
     <div class="wait"><i class="dot"></i><span id="setup-wait">Cerco LibreHardwareMonitor su questo PC…</span></div>
-    <p id="setup-why">Windows non permette a una pagina di leggere le temperature: le legge LibreHardwareMonitor, un programma gratuito e open source, e questo monitor le mostra. Si fa una volta sola.</p>
+    <p id="setup-why" data-t="setupWhy">Windows non permette a una pagina di leggere le temperature: le legge LibreHardwareMonitor, un programma gratuito e open source, e questo monitor le mostra. Si fa una volta sola.</p>
     <ol>
-      <li><span>Scarica <strong>LibreHardwareMonitor</strong> da <a href="https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases" target="_blank" rel="noopener">github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases</a>, estrai lo zip e avvia <strong>LibreHardwareMonitor.exe</strong>. Accetta la richiesta di amministratore e, se la propone, l'installazione di PawnIO: serve per la temperatura della CPU.</span></li>
-      <li><span>Nel menu <strong>Options → Remote Web Server</strong> scegli <strong>Run</strong>. Questa pagina si collega da sola entro due secondi.</span></li>
-      <li><span>Sempre in <strong>Options</strong> attiva <strong>Run On Windows Startup</strong>, <strong>Start Minimized</strong> e <strong>Minimize To Tray</strong>, così parte da solo a ogni accensione.</span></li>
+      <li><span data-th="step1">Scarica <strong>LibreHardwareMonitor</strong> da <a href="https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases" target="_blank" rel="noopener">github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases</a>, estrai lo zip e avvia <strong>LibreHardwareMonitor.exe</strong>. Accetta la richiesta di amministratore e, se la propone, l'installazione di PawnIO: serve per la temperatura della CPU.</span></li>
+      <li><span data-th="step2">Nel menu <strong>Options → Remote Web Server</strong> scegli <strong>Run</strong>. Questa pagina si collega da sola entro due secondi.</span></li>
+      <li><span data-th="step3">Sempre in <strong>Options</strong> attiva <strong>Run On Windows Startup</strong>, <strong>Start Minimized</strong> e <strong>Minimize To Tray</strong>, così parte da solo a ogni accensione.</span></li>
     </ol>
-    <button class="btn" id="setup-demo">Guarda la demo</button><button class="btn ghost" id="setup-settings">Cambia indirizzo</button>
+    <button class="btn" id="setup-demo" data-t="watchDemo">Guarda la demo</button><button class="btn ghost" id="setup-settings" data-t="changeAddr">Cambia indirizzo</button>
   </div>
 </div>
 
 <dialog id="settings" aria-labelledby="settings-title">
   <form method="dialog" id="settings-form">
-    <h2 id="settings-title">Impostazioni</h2>
+    <h2 id="settings-title" data-t="settings">Impostazioni</h2>
     <fieldset>
-      <legend>Temperatura CPU</legend>
+      <legend data-t="cpuTemp">Temperatura CPU</legend>
       <div class="grid2">
-        <label>Attenzione da (°C)<input type="number" name="cpuWarn" min="30" max="120" required></label>
-        <label>Allarme da (°C)<input type="number" name="cpuCrit" min="30" max="120" required></label>
+        <label><span data-t="warnFrom">Attenzione da (°C)</span><input type="number" name="cpuWarn" min="30" max="120" required></label>
+        <label><span data-t="critFrom">Allarme da (°C)</span><input type="number" name="cpuCrit" min="30" max="120" required></label>
       </div>
     </fieldset>
     <fieldset>
-      <legend>Temperatura GPU</legend>
+      <legend data-t="gpuTemp">Temperatura GPU</legend>
       <div class="grid2">
-        <label>Attenzione da (°C)<input type="number" name="gpuWarn" min="30" max="120" required></label>
-        <label>Allarme da (°C)<input type="number" name="gpuCrit" min="30" max="120" required></label>
+        <label><span data-t="warnFrom">Attenzione da (°C)</span><input type="number" name="gpuWarn" min="30" max="120" required></label>
+        <label><span data-t="critFrom">Allarme da (°C)</span><input type="number" name="gpuCrit" min="30" max="120" required></label>
       </div>
     </fieldset>
     <fieldset>
-      <legend>Pieno carico</legend>
-      <label>Segnala quando il carico resta sopra (%)<input type="number" name="fullLoad" min="50" max="100" required></label>
+      <legend data-t="fullLoad">Pieno carico</legend>
+      <label><span data-t="fullAbove">Segnala quando il carico resta sopra (%)</span><input type="number" name="fullLoad" min="50" max="100" required></label>
     </fieldset>
     <fieldset>
-      <label class="check"><input type="checkbox" name="sound">Suona quando scatta l'allarme temperatura</label>
-      <p class="hint">Dopo ogni avvio serve un clic sulla finestra perché il browser lasci partire l'audio.</p>
+      <label class="check"><input type="checkbox" name="sound"><span data-t="soundLabel">Suona quando scatta l'allarme temperatura</span></label>
+      <p class="hint" data-t="soundHint">Dopo ogni avvio serve un clic sulla finestra perché il browser lasci partire l'audio.</p>
     </fieldset>
     <fieldset>
-      <label>Indirizzo di LibreHardwareMonitor<input type="text" name="host" spellcheck="false" required></label>
+      <div class="grid2">
+        <label><span data-t="hostLabel">Indirizzo di LibreHardwareMonitor</span><input type="text" name="host" spellcheck="false" required></label>
+        <label><span data-t="langLabel">Lingua</span><select name="lang"><option value="auto" data-t="langAuto">Automatica</option><option value="it">Italiano</option><option value="en">English</option></select></label>
+      </div>
     </fieldset>
     <div class="actions">
-      <button class="btn" value="save">Salva</button>
-      <button class="btn ghost" value="cancel" formnovalidate>Annulla</button>
+      <button class="btn" value="save" data-t="save">Salva</button>
+      <button class="btn ghost" value="cancel" formnovalidate data-t="cancel">Annulla</button>
       <span class="spacer"></span>
       <button class="btn ghost" type="button" id="settings-demo">Demo</button>
-      <button class="btn ghost" type="button" id="settings-reset">Valori iniziali</button>
+      <button class="btn ghost" type="button" id="settings-reset" data-t="defaults">Valori iniziali</button>
     </div>
   </form>
 </dialog>
@@ -375,7 +378,7 @@ dialog .spacer{flex:1}
 'use strict';
 
 /* ================= impostazioni ================= */
-const DEFAULTS = { host: 'http://localhost:8085', cpuWarn: 80, cpuCrit: 90, gpuWarn: 75, gpuCrit: 85, fullLoad: 95, sound: false };
+const DEFAULTS = { host: 'http://localhost:8085', cpuWarn: 80, cpuCrit: 90, gpuWarn: 75, gpuCrit: 85, fullLoad: 95, sound: false, lang: 'auto' };
 const KEY = 'monitor-pc.v1';
 const HIST = 120;          // campioni nel termografo (2 minuti a 1 al secondo)
 const T_MIN = 25, T_MAX = 105;   // scala fissa del termografo, in °C
@@ -392,6 +395,69 @@ function loadCfg() {
   return c;
 }
 function saveCfg() { try { localStorage.setItem(KEY, JSON.stringify(cfg)); } catch (e) {} }
+
+/* ================= lingua ================= */
+const LHM_URL = 'https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases';
+const LHM_LINK = `<a href="${LHM_URL}" target="_blank" rel="noopener">github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases</a>`;
+const I18N = {
+  it: {
+    cpuAria: 'Processore', gpuAria: 'Scheda video', threadsAria: 'Carico di ogni thread',
+    load: 'Carico', fullLoad: 'Pieno carico', freq: 'Frequenza', power: 'Consumo', coreAvg: 'Media dei core',
+    fan: 'Ventola', fanOff: 'ferma', memClock: 'Freq. memoria', vram: 'Memoria video', threads: '{0} thread',
+    peak: 'picco {0}°', unavailable: 'non disponibile', hot: 'Temperatura alta', warm: 'Sta scaldando',
+    noCpu: 'Processore non rilevato', noGpu: 'Nessuna scheda video rilevata', of: 'di {0}',
+    demoTag: 'Demo, dati finti', demoTitle: 'Clic per uscire dalla demo', waiting: 'In attesa dei dati', live: 'Dati in tempo reale',
+    noCpuTemp: 'Temperatura CPU non letta: avvia LibreHardwareMonitor come amministratore',
+    cpuMissing: 'LibreHardwareMonitor non elenca la CPU: controlla il menu File → Hardware',
+    stale: 'Nessun dato da {0} s: LibreHardwareMonitor è ancora aperto?',
+    settings: 'Impostazioni', settingsTitle: 'Impostazioni (S)', fullscreen: 'Schermo intero', fullTitle: 'Schermo intero (F)',
+    setupTitle: 'Manca solo il lettore dei sensori', searching: 'Cerco LibreHardwareMonitor su {0}…',
+    setupWhy: 'Windows non permette a una pagina di leggere le temperature: le legge LibreHardwareMonitor, un programma gratuito e open source, e questo monitor le mostra. Si fa una volta sola.',
+    step1: `Scarica <strong>LibreHardwareMonitor</strong> da ${LHM_LINK}, estrai lo zip e avvia <strong>LibreHardwareMonitor.exe</strong>. Accetta la richiesta di amministratore e, se la propone, l'installazione di PawnIO: serve per la temperatura della CPU.`,
+    step2: 'Nel menu <strong>Options → Remote Web Server</strong> scegli <strong>Run</strong>. Questa pagina si collega da sola entro due secondi.',
+    step3: 'Sempre in <strong>Options</strong> attiva <strong>Run On Windows Startup</strong>, <strong>Start Minimized</strong> e <strong>Minimize To Tray</strong>, così parte da solo a ogni accensione.',
+    watchDemo: 'Guarda la demo', changeAddr: 'Cambia indirizzo',
+    cpuTemp: 'Temperatura CPU', gpuTemp: 'Temperatura GPU', warnFrom: 'Attenzione da (°C)', critFrom: 'Allarme da (°C)',
+    fullAbove: 'Segnala quando il carico resta sopra (%)', soundLabel: "Suona quando scatta l'allarme temperatura",
+    soundHint: "Dopo ogni avvio serve un clic sulla finestra perché il browser lasci partire l'audio.",
+    hostLabel: 'Indirizzo di LibreHardwareMonitor', langLabel: 'Lingua', langAuto: 'Automatica',
+    save: 'Salva', cancel: 'Annulla', defaults: 'Valori iniziali',
+  },
+  en: {
+    cpuAria: 'Processor', gpuAria: 'Graphics card', threadsAria: 'Load of each thread',
+    load: 'Load', fullLoad: 'Full load', freq: 'Clock', power: 'Power', coreAvg: 'Core average',
+    fan: 'Fan', fanOff: 'off', memClock: 'Memory clock', vram: 'Video memory', threads: '{0} threads',
+    peak: 'peak {0}°', unavailable: 'unavailable', hot: 'High temperature', warm: 'Heating up',
+    noCpu: 'Processor not detected', noGpu: 'No graphics card detected', of: 'of {0}',
+    demoTag: 'Demo, fake data', demoTitle: 'Click to leave the demo', waiting: 'Waiting for data', live: 'Live data',
+    noCpuTemp: 'CPU temperature not read: run LibreHardwareMonitor as administrator',
+    cpuMissing: "LibreHardwareMonitor doesn't list the CPU: check the File → Hardware menu",
+    stale: 'No data for {0} s: is LibreHardwareMonitor still running?',
+    settings: 'Settings', settingsTitle: 'Settings (S)', fullscreen: 'Full screen', fullTitle: 'Full screen (F)',
+    setupTitle: 'Only the sensor reader is missing', searching: 'Looking for LibreHardwareMonitor on {0}…',
+    setupWhy: "Windows doesn't let a web page read temperatures: LibreHardwareMonitor, a free open-source program, reads them and this monitor displays them. You only do this once.",
+    step1: `Download <strong>LibreHardwareMonitor</strong> from ${LHM_LINK}, extract the zip and run <strong>LibreHardwareMonitor.exe</strong>. Accept the administrator prompt and, if it offers, the PawnIO installation: it is needed for the CPU temperature.`,
+    step2: 'In the <strong>Options → Remote Web Server</strong> menu choose <strong>Run</strong>. This page connects by itself within two seconds.',
+    step3: 'Still in <strong>Options</strong>, turn on <strong>Run On Windows Startup</strong>, <strong>Start Minimized</strong> and <strong>Minimize To Tray</strong> so it starts by itself at every boot.',
+    watchDemo: 'Watch the demo', changeAddr: 'Change address',
+    cpuTemp: 'CPU temperature', gpuTemp: 'GPU temperature', warnFrom: 'Warning from (°C)', critFrom: 'Alarm from (°C)',
+    fullAbove: 'Flag when load stays above (%)', soundLabel: 'Beep when the temperature alarm goes off',
+    soundHint: 'After each start, click the window once so the browser allows sound.',
+    hostLabel: 'LibreHardwareMonitor address', langLabel: 'Language', langAuto: 'Automatic',
+    save: 'Save', cancel: 'Cancel', defaults: 'Defaults',
+  },
+};
+let lang = 'it';
+function pickLang() {
+  const want = qs.get('lang') || cfg.lang;
+  if (want === 'it' || want === 'en') return want;
+  return /^it\b/i.test(navigator.language || '') ? 'it' : 'en';      // automatica: italiano solo se il sistema è in italiano
+}
+function t(key, ...args) {
+  let s = I18N[lang][key];
+  if (s == null) s = I18N.it[key] != null ? I18N.it[key] : key;
+  return s.replace(/\{(\d)\}/g, (m, i) => args[i]);
+}
 
 /* ================= lettura di LibreHardwareMonitor ================= */
 function parseNum(v) {
@@ -528,8 +594,18 @@ function demoSnapshot() {
 
 /* ================= vista ================= */
 const $ = (s, r = document) => r.querySelector(s);
-const nf = (d) => new Intl.NumberFormat('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: false });
-const F0 = nf(0), F1 = nf(1), F2 = nf(2);
+const nf = (d) => new Intl.NumberFormat(lang === 'it' ? 'it-IT' : 'en-US', { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: false });
+let F0, F1, F2;
+function applyLang() {
+  lang = pickLang();
+  document.documentElement.lang = lang;
+  F0 = nf(0); F1 = nf(1); F2 = nf(2);
+  for (const el of document.querySelectorAll('[data-t]')) el.textContent = t(el.dataset.t);
+  for (const el of document.querySelectorAll('[data-th]')) el.innerHTML = t(el.dataset.th);
+  for (const el of document.querySelectorAll('[data-t-title]')) el.title = t(el.dataset.tTitle);
+  for (const el of document.querySelectorAll('[data-t-aria]')) el.setAttribute('aria-label', t(el.dataset.tAria));
+}
+applyLang();
 const setText = (el, s) => { if (el && el.textContent !== s) el.textContent = s; };
 const gb = b => b / 2 ** 30;
 const ty = t => 100 - Math.max(0, Math.min(1, (t - T_MIN) / (T_MAX - T_MIN))) * 100;
@@ -544,8 +620,8 @@ function makePanel(id, warnKey, critKey, labels) {
   };
 }
 const P = {
-  cpu: makePanel('cpu', 'cpuWarn', 'cpuCrit', { none: 'Processore non rilevato' }),
-  gpu: makePanel('gpu', 'gpuWarn', 'gpuCrit', { none: 'Nessuna scheda video rilevata' }),
+  cpu: makePanel('cpu', 'cpuWarn', 'cpuCrit', { none: 'noCpu' }),
+  gpu: makePanel('gpu', 'gpuWarn', 'gpuCrit', { none: 'noGpu' }),
 };
 const threadsEl = $('#cpu .threads'), tlabel = $('#cpu [data-f="tlabel"]');
 const extra = (pid, k) => $(`#${pid} [data-x="${k}"]`);
@@ -588,7 +664,7 @@ function renderPanel(p, d) {
   el.classList.toggle('empty', !d || d.temp == null);
   el.classList.toggle('three', !!d && d.temp != null && d.temp >= 99.5);
   if (!d) {
-    setText(p.model, p.labels.none); setText(p.temp, '–'); setText(p.peakEl, ''); setText(p.loadEl, '–'); setText(p.freq, '–');
+    setText(p.model, t(p.labels.none)); setText(p.temp, '–'); setText(p.peakEl, ''); setText(p.loadEl, '–'); setText(p.freq, '–');
     p.bar.style.setProperty('--p', '0%'); p.state = 'unknown'; p.load = 'normal';
     el.dataset.state = 'unknown'; el.dataset.load = 'normal'; p.hist.length = 0; drawThermo(p);
     return;
@@ -602,11 +678,11 @@ function renderPanel(p, d) {
     p.hist.push(d.temp); if (p.hist.length > HIST) p.hist.shift();
     p.peak = p.peak == null ? d.temp : Math.max(p.peak, d.temp);
     setText(p.temp, F0.format(d.temp));
-    setText(p.peakEl, 'picco ' + F0.format(p.peak) + '°');
+    setText(p.peakEl, t('peak', F0.format(p.peak)));
   } else {
-    setText(p.temp, '–'); setText(p.peakEl, 'non disponibile');
+    setText(p.temp, '–'); setText(p.peakEl, t('unavailable'));
   }
-  setText(p.verdict, p.state === 'hot' ? 'Temperatura alta' : p.state === 'warm' ? 'Sta scaldando' : '');
+  setText(p.verdict, p.state === 'hot' ? t('hot') : p.state === 'warm' ? t('warm') : '');
   drawThermo(p);
   // carico
   p.load = loadState(p, d.load);
@@ -631,7 +707,7 @@ function render(s) {
       while (threadsEl.children.length < n) threadsEl.appendChild(document.createElement('i'));
       while (threadsEl.children.length > n) threadsEl.lastChild.remove();
       for (let i = 0; i < n; i++) threadsEl.children[i].style.setProperty('--h', Math.round(c.threads[i]) + '%');
-      setText(tlabel, n + ' thread');
+      setText(tlabel, t('threads', n));
     }
   }
   if (g) {
@@ -639,7 +715,7 @@ function render(s) {
     if (mhz != null && mhz >= 10000) { setText(P.gpu.freq, F2.format(mhz / 1000)); setText(P.gpu.frequ, 'GHz'); }
     else { setText(P.gpu.freq, mhz == null ? '–' : F0.format(mhz)); setText(P.gpu.frequ, 'MHz'); }
     setExtra('gpu', 'power', g.power == null ? null : F0.format(g.power) + ' W');
-    setExtra('gpu', 'fan', g.fan == null ? null : g.fan < 1 ? 'ferma' : F0.format(g.fan) + ' RPM');
+    setExtra('gpu', 'fan', g.fan == null ? null : g.fan < 1 ? t('fanOff') : F0.format(g.fan) + ' RPM');
     setExtra('gpu', 'memclk', g.memClock == null ? null : F0.format(g.memClock) + ' MHz');
     const has = g.vramUsed != null;
     $('#gpu .under').hidden = !has;
@@ -652,7 +728,7 @@ function render(s) {
   $('.ram').hidden = !r || r.used == null;
   if (r && r.used != null) {
     setText($('#ram-used'), F1.format(gb(r.used)) + ' GB');
-    setText($('#ram-of'), r.total ? 'di ' + F0.format(gb(r.total)) : '');
+    setText($('#ram-of'), r.total ? t('of', F0.format(gb(r.total))) : '');
     $('#ram-bar').style.setProperty('--p', (r.total ? Math.min(100, r.used / r.total * 100) : r.load || 0) + '%');
   }
   // titolo della finestra: l'allarme si vede anche nella barra delle applicazioni
@@ -722,19 +798,19 @@ async function tick() {
     document.body.dataset.stale = '0';
     showSetup(false);
     render(snap);
-    if (snap.cpu && snap.cpu.temp == null) setStatus('warn', 'Temperatura CPU non letta: avvia LibreHardwareMonitor come amministratore');
-    else if (!snap.cpu) setStatus('warn', 'LibreHardwareMonitor non elenca la CPU: controlla il menu File → Hardware');
-    else setStatus('live', 'Dati in tempo reale');
+    if (snap.cpu && snap.cpu.temp == null) setStatus('warn', t('noCpuTemp'));
+    else if (!snap.cpu) setStatus('warn', t('cpuMissing'));
+    else setStatus('live', t('live'));
     schedule(1000);
   } catch (e) {
     if (demo.on) return;
     fails++;
     if (!everLive) {
       if (location.protocol !== 'file:' && !qs.has('host')) return setDemo(true, true);   // anteprima fuori dal PC: demo
-      showSetup(true, 'Cerco LibreHardwareMonitor su ' + cfg.host.replace(/^https?:\/\//, '') + '…');
+      showSetup(true, t('searching', cfg.host.replace(/^https?:\/\//, '')));
     } else if (fails >= 3) {
       document.body.dataset.stale = '1';
-      setStatus('warn', 'Nessun dato da ' + Math.round((now - lastOk) / 1000) + ' s: LibreHardwareMonitor è ancora aperto?');
+      setStatus('warn', t('stale', Math.round((now - lastOk) / 1000)));
     }
     schedule(everLive ? 1000 : 2000);
   }
@@ -756,12 +832,13 @@ dlg.addEventListener('close', () => {
   const next = Object.assign({}, cfg, {
     cpuWarn: n('cpuWarn'), cpuCrit: n('cpuCrit'), gpuWarn: n('gpuWarn'), gpuCrit: n('gpuCrit'), fullLoad: n('fullLoad'),
     sound: form.elements.sound.checked, host: form.elements.host.value.trim() || DEFAULTS.host,
+    lang: form.elements.lang.value,
   });
   if (!/^https?:\/\//i.test(next.host)) next.host = 'http://' + next.host;
   if (next.cpuWarn > next.cpuCrit) next.cpuWarn = next.cpuCrit;
   if (next.gpuWarn > next.gpuCrit) next.gpuWarn = next.gpuCrit;
   const hostChanged = next.host !== cfg.host;
-  cfg = next; saveCfg(); placeMarks(P.cpu); placeMarks(P.gpu);
+  cfg = next; saveCfg(); applyLang(); placeMarks(P.cpu); placeMarks(P.gpu);
   if (cfg.sound) alarm(true);            // prova del suono, e sblocca l'audio con questo clic
   if (hostChanged) { everLive = false; fails = 0; schedule(0); }
 });
@@ -802,7 +879,7 @@ placeMarks(P.cpu); placeMarks(P.gpu);
 if (qs.has('demo')) setDemo(true); else tick();
 
 // per i test automatici
-window.__monitor = { snapshotFromLhm, render, P, cfg: () => cfg };
+window.__monitor = { snapshotFromLhm, render, P, cfg: () => cfg, I18N };
 })();
 </script>
 </body>
