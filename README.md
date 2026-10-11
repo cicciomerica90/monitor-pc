@@ -88,3 +88,7 @@ Componenti di terze parti, dettagli in `LICENZE-TERZE-PARTI.txt`:
 
 - [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), licenza MPL 2.0. Non è incluso: lo scarica l'installatore.
 - Caratteri Big Shoulders e Atkinson Hyperlegible Next, licenza SIL OFL 1.1, incorporati in `Monitor PC.html`.
+
+## Crediti
+
+Progettato e scritto da cicciomerica90 insieme a Claude, l'assistente di Anthropic.
