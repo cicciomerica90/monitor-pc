@@ -91,6 +91,13 @@ class Base(unittest.TestCase):
     def state(self, page, pid):
         return page.eval_on_selector("#" + pid, "e => e.dataset.state + '/' + e.dataset.load")
 
+    def save(self, page):
+        """Press Save in the settings and wait until the page has applied them."""
+        page.evaluate("""window.__saved = new Promise(r => document.querySelector('#settings')
+            .addEventListener('close', () => setTimeout(r, 0), { once: true })); 0""")
+        page.click("button[value=save]")
+        page.evaluate("window.__saved")
+
     def reload(self, page):
         COV.collect(page)          # coverage of the page about to be replaced
         page.reload()
@@ -442,7 +449,7 @@ class Settings(Base):
             p.fill("input[name=gpuCrit]", "60")
             p.fill("input[name=fullLoad]", "90")
             p.fill("input[name=host]", lhm.url.replace("http://", ""))
-            p.click("button[value=save]")
+            self.save(p)
             cfg = self.saved(p)
             self.assertEqual((cfg["cpuWarn"], cfg["cpuCrit"], cfg["gpuWarn"], cfg["gpuCrit"], cfg["fullLoad"]), (90, 90, 60, 60, 90))
             self.assertEqual(cfg["host"], lhm.url)
@@ -486,7 +493,7 @@ class Settings(Base):
             self.wait(p, "document.querySelector('#status').dataset.kind === 'live'")
             p.keyboard.press("s")
             p.fill("input[name=cpuCrit]", "85")
-            p.click("button[value=save]")
+            self.save(p)
             self.assertEqual(p.evaluate("window.__monitor.cfg().cpuCrit"), 85)
 
     def test_corrupt_saved_settings_fall_back_to_defaults(self):
@@ -499,7 +506,7 @@ class Settings(Base):
         p = self.open(DEAD)
         p.keyboard.press("s")
         p.fill("input[name=host]", "   ")
-        p.click("button[value=save]")
+        self.save(p)
         self.assertEqual(p.evaluate("window.__monitor.cfg().host"), "http://localhost:8085")
 
 
@@ -517,14 +524,14 @@ class Language(Base):
         p = self.open("?demo=1", locale="it-IT")
         p.keyboard.press("s")
         p.select_option("select[name=lang]", "en")
-        p.click("button[value=save]")
+        self.save(p)
         self.assertEqual(self.text(p, "#demo-tag"), "Demo, fake data")
         self.assertEqual(p.get_attribute("#btn-full", "title"), "Full screen (F)")
         self.reload(p)
         self.assertEqual(p.evaluate("document.documentElement.lang"), "en")
         p.keyboard.press("s")
         p.select_option("select[name=lang]", "it")
-        p.click("button[value=save]")
+        self.save(p)
         self.assertEqual(self.text(p, "#demo-tag"), "Demo, dati finti")
 
     def test_browser_without_a_language_and_unknown_texts(self):
@@ -575,7 +582,7 @@ class Browser(Base):
         p = self.open(DEAD, init=init)
         self.render(p, snap(cpu={"temp": 95}))
         p.keyboard.press("s")
-        p.click("button[value=save]")                                 # saving with sound on plays a test beep
+        self.save(p)                                 # saving with sound on plays a test beep
 
     def test_beep_with_the_older_audio_name(self):
         init = FAKE_AUDIO.replace("window.AudioContext =", "window.webkitAudioContext =") + \
