@@ -2,6 +2,8 @@
 
 [English](README.md) | **Italiano**
 
+[![Tests](https://github.com/cicciomerica90/monitor-pc/actions/workflows/tests.yml/badge.svg)](https://github.com/cicciomerica90/monitor-pc/actions/workflows/tests.yml)
+
 Temperature, frequenze e carico di CPU e GPU in tempo reale, pensato per restare aperto su un monitor piccolo accanto a quello principale. Gratuito, per Windows 10 e 11.
 
 ![Il monitor in condizioni normali](schermate/normale.png)
@@ -81,6 +83,26 @@ Il programma è un unico file HTML, senza dipendenze. L'installatore è in Power
 - È una prima versione, provata finora su pochi PC. I nomi dei sensori cambiano da un hardware all'altro: se un valore resta "–", apri una segnalazione indicando CPU, GPU e versione di LibreHardwareMonitor.
 - Lo schermo intero va rimesso con `F` a ogni avvio; la posizione della finestra invece viene ricordata.
 - Interfaccia solo in italiano e inglese.
+
+## Prove
+
+A ogni modifica GitHub esegue tre gruppi di prove (il riquadro in alto ne mostra l'esito):
+
+- **Pagina del monitor**: 42 prove in Chromium senza finestra, contro un LibreHardwareMonitor finto che ne imita i diversi formati di dati, le lingue e i guasti. La copertura del codice la misura Chromium stesso.
+- **Installatore e disinstallatore**: prove Pester in Windows PowerShell 5.1 e PowerShell 7, con tutto ciò che modificherebbe il PC sostituito da finti. Scrivono solo in una cartella temporanea, quindi si possono eseguire anche sul proprio PC.
+- **Installazione vera**: su un Windows pulito l'installatore viene eseguito davvero, poi la prova controlla file, attività pianificata, voce tra le app installate e che i sensori rispondano, infine disinstalla e controlla che non resti niente.
+
+Per eseguirle in proprio:
+
+```
+pip install playwright && python -m playwright install chromium
+python -m unittest discover -s tests/page -v
+
+Install-Module Pester -MinimumVersion 5.5 -Scope CurrentUser
+pwsh -File tests/powershell/Run-Tests.ps1
+```
+
+Risultati e rapporti di copertura finiscono in `tests/results/`.
 
 ## Crediti
 

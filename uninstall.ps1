@@ -21,6 +21,7 @@ $TaskName     = 'LibreHardwareMonitor'
 $UninstallKey = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MonitorPC'
 # the second name is the state file written by version 1.0
 $StateFiles   = @('install-state.json', 'installazione.json')
+$script:ExitCode = 0
 
 if (-not $Lang) {
     $Lang = 'en'
@@ -81,6 +82,12 @@ function L {
     return $s
 }
 
+# Desktop, Startup...: a separate function so the tests never touch the real folders.
+function Get-SpecialFolder {
+    param([string]$Name)
+    return [Environment]::GetFolderPath($Name)
+}
+
 function Say {
     param([string]$Text = '', [string]$Color = 'Gray')
     Write-Host $Text -ForegroundColor $Color
@@ -103,7 +110,7 @@ function Exit-Folder {
 function Remove-UserShortcuts {
     foreach ($name in 'Desktop', 'Startup') {
         try {
-            $lnk = Join-Path ([Environment]::GetFolderPath($name)) 'Monitor PC.lnk'
+            $lnk = Join-Path (Get-SpecialFolder $name) 'Monitor PC.lnk'
             if (Test-Path -LiteralPath $lnk) { Remove-Item -LiteralPath $lnk -Force }
         } catch { }
     }
@@ -228,21 +235,22 @@ function Invoke-UserStage {
     Say (L 'PawnIo2')
 }
 
-if ($FunctionsOnly) { return }
-
-if ($Stage -eq 'system') {
-    try {
-        if (-not (Test-Admin)) { throw (L 'NeedAdmin') }
-        Invoke-SystemStage
-        exit 0
-    } catch {
-        Say ''
-        Say (L 'Error' $_.Exception.Message) 'Red'
-        Say ''
-        [void](Read-Host (L 'PressEnterClose'))
-        exit 1
+# Runs the requested stage and leaves the exit code in $script:ExitCode.
+function Invoke-Main {
+    if ($Stage -eq 'system') {
+        try {
+            if (-not (Test-Admin)) { throw (L 'NeedAdmin') }
+            Invoke-SystemStage
+            $script:ExitCode = 0
+        } catch {
+            Say ''
+            Say (L 'Error' $_.Exception.Message) 'Red'
+            Say ''
+            [void](Read-Host (L 'PressEnterClose'))
+            $script:ExitCode = 1
+        }
+        return
     }
-} else {
     try {
         Invoke-UserStage
     } catch {
@@ -251,4 +259,9 @@ if ($Stage -eq 'system') {
     }
     Say ''
     [void](Read-Host (L 'PressEnterClose'))
+    $script:ExitCode = 0
 }
+
+if ($FunctionsOnly) { return }
+Invoke-Main | Out-Null
+exit $script:ExitCode

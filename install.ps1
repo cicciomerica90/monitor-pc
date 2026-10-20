@@ -34,6 +34,7 @@ $TaskName     = 'LibreHardwareMonitor'
 $UninstallKey = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\MonitorPC'
 $StateFile    = 'install-state.json'
 $script:Succeeded = $false
+$script:ExitCode = 1
 
 if (-not $Lang) {
     $Lang = 'en'
@@ -152,6 +153,12 @@ function L {
 }
 
 # ---------------------------------------------------------------- functions
+
+# Desktop, Startup...: a separate function so the tests never touch the real folders.
+function Get-SpecialFolder {
+    param([string]$Name)
+    return [Environment]::GetFolderPath($Name)
+}
 
 function Say {
     param([string]$Text = '', [string]$Color = 'Gray')
@@ -474,8 +481,8 @@ function Invoke-SystemStage {
         Set-ItemProperty -Path $UninstallKey -Name 'InstallLocation' -Value $Dest
         Set-ItemProperty -Path $UninstallKey -Name 'DisplayIcon' -Value (Join-Path $Dest 'monitor.ico')
         Set-ItemProperty -Path $UninstallKey -Name 'UninstallString' -Value $cmd
-        Set-ItemProperty -Path $UninstallKey -Name 'NoModify' -Value 1 -Type DWord
-        Set-ItemProperty -Path $UninstallKey -Name 'NoRepair' -Value 1 -Type DWord
+        Set-ItemProperty -Path $UninstallKey -Name 'NoModify' -Value ([int]1)
+        Set-ItemProperty -Path $UninstallKey -Name 'NoRepair' -Value ([int]1)
     } catch {
         Say (L 'RegisterFailed') 'DarkYellow'
     }
@@ -569,13 +576,13 @@ function Invoke-UserStage {
     # shortcuts: on the desktop and, if asked, among the programs that start at logon
     $desktopLnk = $null
     try {
-        $desktopLnk = New-MonitorShortcut ([Environment]::GetFolderPath('Desktop'))
+        $desktopLnk = New-MonitorShortcut (Get-SpecialFolder 'Desktop')
         Say (L 'ShortcutOk') 'Green'
     } catch {
         Say (L 'ShortcutFailed' (Join-Path $Dest 'Monitor PC.html')) 'Yellow'
     }
     try {
-        $startupFolder = [Environment]::GetFolderPath('Startup')
+        $startupFolder = Get-SpecialFolder 'Startup'
         if ($autostart) {
             [void](New-MonitorShortcut $startupFolder)
             Say (L 'AutostartOk') 'Green'
@@ -606,22 +613,23 @@ function Invoke-UserStage {
 
 # ---------------------------------------------------------------- entry point
 
-if ($FunctionsOnly) { return }
-
-if ($Stage -eq 'system') {
-    try {
-        try { $Host.UI.RawUI.WindowTitle = (L 'TitleAdmin') } catch { }
-        if (-not (Test-Admin)) { throw (L 'NeedAdmin') }
-        Invoke-SystemStage
-        exit 0
-    } catch {
-        Say ''
-        Say (L 'Error' $_.Exception.Message) 'Red'
-        Say ''
-        [void](Read-Host (L 'PressEnterClose'))
-        exit 1
+# Runs the requested stage and leaves the exit code in $script:ExitCode.
+function Invoke-Main {
+    if ($Stage -eq 'system') {
+        try {
+            try { $Host.UI.RawUI.WindowTitle = (L 'TitleAdmin') } catch { }
+            if (-not (Test-Admin)) { throw (L 'NeedAdmin') }
+            Invoke-SystemStage
+            $script:ExitCode = 0
+        } catch {
+            Say ''
+            Say (L 'Error' $_.Exception.Message) 'Red'
+            Say ''
+            [void](Read-Host (L 'PressEnterClose'))
+            $script:ExitCode = 1
+        }
+        return
     }
-} else {
     try {
         Invoke-UserStage
     } catch {
@@ -630,5 +638,9 @@ if ($Stage -eq 'system') {
     }
     Say ''
     [void](Read-Host (L 'PressEnterClose'))
-    if ($script:Succeeded) { exit 0 } else { exit 1 }
+    if ($script:Succeeded) { $script:ExitCode = 0 } else { $script:ExitCode = 1 }
 }
+
+if ($FunctionsOnly) { return }
+Invoke-Main | Out-Null
+exit $script:ExitCode

@@ -2,6 +2,8 @@
 
 **English** | [Italiano](README.it.md)
 
+[![Tests](https://github.com/cicciomerica90/monitor-pc/actions/workflows/tests.yml/badge.svg)](https://github.com/cicciomerica90/monitor-pc/actions/workflows/tests.yml)
+
 Real-time CPU and GPU temperature, clock and load, made to stay open on a small secondary monitor. Free, for Windows 10 and 11.
 
 ![The monitor in normal conditions](screenshots/normal.png)
@@ -81,6 +83,26 @@ The program is a single HTML file with no dependencies. The installer is plain P
 - This is an early version, tried on few machines so far. Sensor names change from one hardware to another: if a value stays "–", please open an issue with your CPU, GPU and LibreHardwareMonitor version.
 - Full screen has to be turned on again with `F` at every start; the window position is remembered.
 - Interface in English and Italian only.
+
+## Tests
+
+Every change runs three sets of tests on GitHub (the badge at the top shows the result):
+
+- **Monitor page**: 42 tests in headless Chromium against a fake LibreHardwareMonitor that imitates its different data formats, languages and failures. Code coverage is measured by Chromium itself.
+- **Installer and uninstaller**: Pester tests in Windows PowerShell 5.1 and PowerShell 7, with everything that would change the PC replaced by mocks. They write only to a temporary folder, so they are safe to run on your own PC.
+- **Real install**: on a clean Windows machine the installer really runs, then the test checks the files, the scheduled task, the apps list entry and that the sensors answer, and finally uninstalls and checks that nothing is left.
+
+To run them yourself:
+
+```
+pip install playwright && python -m playwright install chromium
+python -m unittest discover -s tests/page -v
+
+Install-Module Pester -MinimumVersion 5.5 -Scope CurrentUser
+pwsh -File tests/powershell/Run-Tests.ps1
+```
+
+Results and coverage reports end up in `tests/results/`.
 
 ## Credits
 
