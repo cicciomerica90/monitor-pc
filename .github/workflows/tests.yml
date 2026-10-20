@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Pester
-        run: Install-Module Pester -MinimumVersion 5.5 -Force -SkipPublisherCheck -Scope CurrentUser
+        run: Install-Module Pester -RequiredVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser
       - name: Run the installer tests with coverage
         run: ./tests/powershell/Run-Tests.ps1
       - uses: actions/upload-artifact@v4
