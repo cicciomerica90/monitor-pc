@@ -10,6 +10,7 @@ BeforeAll {
 Describe 'uninstall.ps1' {
     BeforeEach {
         $script:SavedEnv = @{ ProgramFiles = $env:ProgramFiles; TEMP = $env:TEMP }
+        $script:SavedCwd = [Environment]::CurrentDirectory
         $script:Root = Join-Path $TestDrive ([Guid]::NewGuid().ToString('N').Substring(0, 8))
         $env:ProgramFiles = Join-Path $script:Root 'Program Files'
         $env:TEMP = Join-Path $script:Root 'Temp'
@@ -38,6 +39,8 @@ Describe 'uninstall.ps1' {
     }
     AfterEach {
         Pop-Location
+        # the uninstaller moves the process into TEMP; on Windows that would lock Pester's TestDrive
+        [Environment]::CurrentDirectory = $script:SavedCwd
         foreach ($k in $script:SavedEnv.Keys) { Set-Item "env:$k" $script:SavedEnv[$k] }
     }
 
