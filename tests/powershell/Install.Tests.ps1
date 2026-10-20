@@ -447,10 +447,10 @@ Describe 'install.ps1 Windows helpers' {
     It 'returns the real special folders' {
         Get-SpecialFolder 'ApplicationData' | Should -Be ([Environment]::GetFolderPath('ApplicationData'))
     }
-    It 'tells whether it runs as administrator' -Skip:(-not $script:OnWindows) {
+    It 'tells whether it runs as administrator' -Skip:([Environment]::OSVersion.Platform -ne 'Win32NT') {
         Test-Admin | Should -BeOfType [bool]
     }
-    It 'writes a real Windows shortcut' -Skip:(-not $script:OnWindows) {
+    It 'writes a real Windows shortcut' -Skip:([Environment]::OSVersion.Platform -ne 'Win32NT') {
         $lnk = Join-Path $TestDrive 'test.lnk'
         New-Shortcut -File $lnk -Target 'C:\Windows\notepad.exe' -Arguments '--x' -Icon 'C:\Windows\notepad.exe' -Folder 'C:\Windows'
         $c = (New-Object -ComObject WScript.Shell).CreateShortcut($lnk)
