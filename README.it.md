@@ -98,7 +98,7 @@ Per eseguirle in proprio:
 pip install playwright && python -m playwright install chromium
 python -m unittest discover -s tests/page -v
 
-Install-Module Pester -MinimumVersion 5.5 -Scope CurrentUser
+Install-Module Pester -RequiredVersion 5.7.1 -Scope CurrentUser
 pwsh -File tests/powershell/Run-Tests.ps1
 ```
 
