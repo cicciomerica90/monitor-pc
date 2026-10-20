@@ -3,7 +3,7 @@
 #   pwsh -File tests/powershell/Run-Tests.ps1          (PowerShell 7)
 #   powershell -File tests\powershell\Run-Tests.ps1    (Windows PowerShell 5.1)
 #
-# Needs Pester 5.5 or later:  Install-Module Pester -MinimumVersion 5.5 -Scope CurrentUser
+# Needs Pester 5:  Install-Module Pester -RequiredVersion 5.7.1 -Scope CurrentUser
 # Results go to tests/results/: test report, JaCoCo coverage and a text summary.
 
 param([string]$PesterPath = '')
@@ -13,7 +13,8 @@ $repo = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $results = Join-Path $repo 'tests\results'
 New-Item -ItemType Directory -Force -Path $results | Out-Null
 
-if ($PesterPath) { Import-Module $PesterPath -Force } else { Import-Module Pester -MinimumVersion 5.5 -Force }
+# Pester 6 changed how mocks with filters behave: these tests are written for Pester 5.
+if ($PesterPath) { Import-Module $PesterPath -Force } else { Import-Module Pester -MinimumVersion 5.5 -MaximumVersion 5.99.99 -Force }
 
 $cfg = New-PesterConfiguration
 $cfg.Run.Path = $PSScriptRoot
