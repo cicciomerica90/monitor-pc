@@ -1,0 +1,88 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  page:
+    name: Monitor page (Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright
+        run: |
+          pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Run the page tests with coverage
+        run: python -m unittest discover -s tests/page -v
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: page-results
+          path: tests/results
+
+  installer:
+    name: Installer tests (${{ matrix.shell }})
+    runs-on: windows-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shell: [powershell, pwsh]
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pester
+        run: Install-Module Pester -MinimumVersion 5.5 -Force -SkipPublisherCheck -Scope CurrentUser
+      - name: Run the installer tests with coverage
+        run: ./tests/powershell/Run-Tests.ps1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: installer-results-${{ matrix.shell }}
+          path: tests/results
+
+  end-to-end:
+    name: Real install and uninstall on Windows
+    runs-on: windows-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - uses: actions/checkout@v4
+      # LibreHardwareMonitor asks about PawnIO in a dialog when it is missing;
+      # nobody can answer it here, so the driver is installed beforehand.
+      - name: Install PawnIO silently
+        run: |
+          Invoke-WebRequest https://github.com/namazso/PawnIO.Setup/releases/latest/download/PawnIO_setup.exe -OutFile "$env:RUNNER_TEMP\PawnIO_setup.exe" -UseBasicParsing
+          $p = Start-Process "$env:RUNNER_TEMP\PawnIO_setup.exe" -ArgumentList '-install', '-silent' -Wait -PassThru
+          "PawnIO setup exit code: $($p.ExitCode)"
+      - name: Install (administrator stage of install.ps1)
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Stage system -Lang en
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Check the installation and the sensors
+        run: .\tests\e2e\Check-Install.ps1
+      - name: Uninstall (administrator stage of uninstall.ps1)
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File .\uninstall.ps1 -Stage system -Lang en
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Check that everything is gone
+        run: .\tests\e2e\Check-Uninstall.ps1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: end-to-end-results
+          path: tests/results
